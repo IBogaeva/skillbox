@@ -1,4 +1,5 @@
 const data = {
-  message: 'Hello Vue',
+  message: 'Message',
+  text: ' from data',
 };
 export default data;
