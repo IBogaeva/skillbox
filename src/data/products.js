@@ -59,4 +59,19 @@ export default [
     price: 30690,
     image: '/img/headphones.jpg',
   },
+  {
+    title: 'Смарт-часы Samsung Galaxy Watch Active2 SM-R820 Лакрица',
+    price: 19990,
+    image: '/img/30047917m.jpg',
+  },
+  {
+    title: 'Электробритва Braun 300s',
+    price: 2990,
+    image: '/img/20044152m.jpg',
+  },
+  {
+    title: 'Ирригатор Philips Sonicare AirFloss',
+    price: 5990,
+    image: '/img/20066853m.jpg',
+  },
 ];
