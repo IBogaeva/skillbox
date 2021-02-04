@@ -5,7 +5,7 @@ export default [
     title: 'Радионяня Motorola MBP16',
     price: 3690,
     image: '/img/radio.jpg',
-    colors: ['#73B6EA', '#8BE000', '#000'],
+    colors: ['#73B6EA', '#8BE000', '#000', '#FF6B00'],
   },
   {
     id: 2,
@@ -29,7 +29,7 @@ export default [
     title: 'Электроскейт Razor Cruiser',
     price: 24690,
     image: '/img/board.jpg',
-    colors: ['#73B6EA', '#8BE000', '#000'],
+    colors: ['#73B6EA', '#8BE000', '#000', '#FFBE15'],
   },
   {
     id: 5,

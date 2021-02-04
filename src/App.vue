@@ -11,7 +11,9 @@
 
     <div class="content__catalog">
       <ProductFilter :price-from.sync="filterPriceFrom"
-                     :price-to.sync="filterPriceTo" :category-id.sync="filterCategoryId"/>
+                     :price-to.sync="filterPriceTo"
+                     :category-id.sync="filterCategoryId"
+                     :color.sync="filterColor"/>
       <section class="catalog">
 
         <ProductList :products="products"/>

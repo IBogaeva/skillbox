@@ -33,7 +33,7 @@
           <li class="colors__item" v-for="item in colors" :key="item">
             <label class="colors__label">
               <input class="colors__radio sr-only" type="radio"
-                     name="color" :value="item">
+                     name="color" :value="item" v-model="currentColor">
               <span class="colors__value" :style="'background-color: ' + item + ';'">
                   </span>
             </label>
