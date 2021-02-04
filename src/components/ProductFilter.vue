@@ -30,11 +30,11 @@
       <fieldset class="form__block">
         <legend class="form__legend">Цвет</legend>
         <ul class="colors">
-          <li class="colors__item" v-for="color in colors" :key="color.id">
+          <li class="colors__item" v-for="item in colors" :key="item">
             <label class="colors__label">
               <input class="colors__radio sr-only" type="radio"
-                     name="color" :value="color.colorCode">
-              <span class="colors__value" :style="color.backgroundColor">
+                     name="color" :value="item">
+              <span class="colors__value" :style="'background-color: ' + item + ';'">
                   </span>
             </label>
           </li>
@@ -124,10 +124,10 @@ export default {
       currentPriceFrom: 0,
       currentPriceTo: 0,
       currentCategoryId: 0,
-      currentColorId: 0,
+      currentColor: '',
     };
   },
-  props: ['priceFrom', 'priceTo', 'categoryId', 'colorId'],
+  props: ['priceFrom', 'priceTo', 'categoryId', 'color'],
   computed: {
     categories() {
       return categories;
@@ -147,7 +147,7 @@ export default {
       this.currentCategoryId = value;
     },
     colorId(value) {
-      this.currentColorId = value;
+      this.currentColor = value;
     },
   },
   methods: {
@@ -155,13 +155,13 @@ export default {
       this.$emit('update:priceFrom', this.currentPriceFrom);
       this.$emit('update:priceTo', this.currentPriceTo);
       this.$emit('update:categoryId', this.currentCategoryId);
-      this.$emit('update:colorId', this.currentColorId);
+      this.$emit('update:color', this.currentColor);
     },
     reset() {
       this.$emit('update:priceFrom', 0);
       this.$emit('update:priceTo', 0);
       this.$emit('update:categoryId', 0);
-      this.$emit('update:colorId', 0);
+      this.$emit('update:color', '');
     },
   },
 };
