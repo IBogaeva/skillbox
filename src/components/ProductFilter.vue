@@ -29,16 +29,8 @@
 
       <fieldset class="form__block">
         <legend class="form__legend">Цвет</legend>
-        <ul class="colors">
-          <li class="colors__item" v-for="item in colors" :key="item">
-            <label class="colors__label">
-              <input class="colors__radio sr-only" type="radio"
-                     name="color" :value="item" v-model="currentColor">
-              <span class="colors__value" :style="'background-color: ' + item + ';'">
-                  </span>
-            </label>
-          </li>
-        </ul>
+        <ColorList :colors="colors" :current-color-id.sync="currentColorId"
+                   class="colors colors--white"/>
       </fieldset>
 
       <fieldset class="form__block">
@@ -117,17 +109,19 @@
 <script>
 import categories from '../data/categories';
 import colors from '../data/colors';
+import ColorList from './ColorList.vue';
 
 export default {
+  components: { ColorList },
   data() {
     return {
       currentPriceFrom: 0,
       currentPriceTo: 0,
       currentCategoryId: 0,
-      currentColor: '',
+      currentColorId: 0,
     };
   },
-  props: ['priceFrom', 'priceTo', 'categoryId', 'color'],
+  props: ['priceFrom', 'priceTo', 'categoryId', 'colorId'],
   computed: {
     categories() {
       return categories;
@@ -147,7 +141,7 @@ export default {
       this.currentCategoryId = value;
     },
     colorId(value) {
-      this.currentColor = value;
+      this.currentColorId = value;
     },
   },
   methods: {
@@ -155,13 +149,13 @@ export default {
       this.$emit('update:priceFrom', this.currentPriceFrom);
       this.$emit('update:priceTo', this.currentPriceTo);
       this.$emit('update:categoryId', this.currentCategoryId);
-      this.$emit('update:color', this.currentColor);
+      this.$emit('update:colorId', this.currentColorId);
     },
     reset() {
       this.$emit('update:priceFrom', 0);
       this.$emit('update:priceTo', 0);
       this.$emit('update:categoryId', 0);
-      this.$emit('update:color', '');
+      this.$emit('update:colorId', 0);
     },
   },
 };
