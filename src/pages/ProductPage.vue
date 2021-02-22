@@ -103,7 +103,7 @@
             </fieldset>
 
             <div class="item__row">
-              <AmountChange v-model.number="productAmount" class="form__counter"/>
+              <AmountChange :current-amount.sync="productAmount" class="form__counter" />
               <button class="button button--primery" type="submit">
                 В корзину
               </button>
@@ -190,9 +190,8 @@
 <script>
 import products from '@/data/products';
 import categories from '@/data/categories';
-import gotoPage from '@/helpers/gotoPage';
 import numberFormat from '@/helpers/numberFormat';
-import AmountChange from '@/components/AmountChange.vue';
+import AmountChange from '@/components/common/AmountChange.vue';
 
 export default {
   data() {
@@ -213,12 +212,18 @@ export default {
     },
   },
   methods: {
-    gotoPage,
     addToCart() {
       this.$store.commit(
         'addProductToCart',
         { productId: this.product.id, amount: this.productAmount },
       );
+    },
+  },
+  watch: {
+    '$route.params.id': function routeParamsId() {
+      if (!this.product) {
+        this.$router.replace({ name: 'notFound' });
+      }
     },
   },
 };

@@ -107,9 +107,9 @@
 </template>
 
 <script>
-import categories from '../data/categories';
-import colors from '../data/colors';
-import ColorList from './ColorList.vue';
+import categories from '@/data/categories';
+import colors from '@/data/colors';
+import ColorList from '@/components/common/ColorList.vue';
 
 export default {
   components: { ColorList },

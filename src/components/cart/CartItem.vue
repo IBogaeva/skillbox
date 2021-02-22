@@ -10,7 +10,7 @@
                   Артикул: {{ item.product.id }}
                 </span>
 
-    <AmountChange v-model.number="amount" class="product__counter form__counter"/>
+    <AmountChange :current-amount.sync="amount" class="product__counter form__counter"/>
 
     <b class="product__price">
       {{ item.amount * item.product.price | numberFormat }} ₽
@@ -28,7 +28,7 @@
 <script>
 import numberFormat from '@/helpers/numberFormat';
 import { mapMutations } from 'vuex';
-import AmountChange from '@/components/AmountChange.vue';
+import AmountChange from '@/components/common/AmountChange.vue';
 
 export default {
   filters: {

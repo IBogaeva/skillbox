@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import ProductItem from './ProductItem.vue';
+import ProductItem from '@/components/product/ProductItem.vue';
 
 export default {
   components: { ProductItem },

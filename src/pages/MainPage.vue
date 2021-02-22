@@ -26,9 +26,9 @@
 
 <script>
 import products from '@/data/products';
-import ProductList from '@/components/ProductList.vue';
+import ProductList from '@/components/product/ProductList.vue';
 import BasePagination from '@/components/BasePagination.vue';
-import ProductFilter from '@/components/ProductFilter.vue';
+import ProductFilter from '@/components/product/ProductFilter.vue';
 
 export default {
   components: { ProductList, BasePagination, ProductFilter },

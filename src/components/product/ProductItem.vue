@@ -19,10 +19,9 @@
 </template>
 
 <script>
-import ColorList from './ColorList.vue';
-import colors from '../data/colors';
-import gotoPage from '../helpers/gotoPage';
-import numberFormat from '../helpers/numberFormat';
+import ColorList from '@/components/common/ColorList.vue';
+import colors from '@/data/colors';
+import numberFormat from '@/helpers/numberFormat';
 
 export default {
   components: { ColorList },
@@ -33,9 +32,6 @@ export default {
     return {
       currentColorId: 0,
     };
-  },
-  methods: {
-    gotoPage,
   },
   props: ['product', 'colors'],
   computed: {
