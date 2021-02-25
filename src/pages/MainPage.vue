@@ -29,6 +29,7 @@ import products from '@/data/products';
 import ProductList from '@/components/product/ProductList.vue';
 import BasePagination from '@/components/BasePagination.vue';
 import ProductFilter from '@/components/product/ProductFilter.vue';
+import axios from 'axios';
 
 export default {
   components: { ProductList, BasePagination, ProductFilter },
@@ -38,9 +39,9 @@ export default {
       filterPriceTo: 0,
       filterCategoryId: 0,
       filterColorId: 0,
-
-      page: 1,
       productsPerPage: 3,
+      page: 1,
+      productsData: null,
     };
   },
   computed: {
@@ -65,12 +66,30 @@ export default {
       return filteredProducts;
     },
     products() {
-      const offset = (this.page - 1) * this.productsPerPage;
-      return this.filteredProducts.slice(offset, offset + this.productsPerPage);
+      return this.productsData
+        ? this.productsData.items.map((product) => ({
+          ...product,
+          image: product.image.file.url,
+        }))
+        : [];
     },
     countProducts() {
-      return this.filteredProducts.length;
+      return this.productsData ? this.productsData.pagination.total : 0;
     },
+  },
+  methods: {
+    loadProducts() {
+      axios.get(`http://vue-study.dev.creonit.ru/api/products?page=${this.page}&limit=${this.productsPerPage}`)
+        .then((response) => { this.productsData = response.data; });
+    },
+  },
+  watch: {
+    page() {
+      this.loadProducts();
+    },
+  },
+  created() {
+    this.loadProducts();
   },
 };
 </script>
