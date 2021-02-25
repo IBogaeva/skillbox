@@ -20,8 +20,8 @@
 
 <script>
 import ColorList from '@/components/common/ColorList.vue';
-import colors from '@/data/colors';
 import numberFormat from '@/helpers/numberFormat';
+import axios from 'axios';
 
 export default {
   components: { ColorList },
@@ -31,18 +31,31 @@ export default {
   data() {
     return {
       currentColorId: 0,
+      colorsData: null,
     };
   },
-  props: ['product', 'colors'],
+  props: ['product'],
   computed: {
     filteredColors() {
-      return colors.filter((color) => this.product.colors.includes(color.id));
+      return this.product.colors;
+    },
+    colors() {
+      return this.colorsData ? this.colorsData.items : [];
+    },
+  },
+  methods: {
+    loadColors() {
+      axios.get('http://vue-study.dev.creonit.ru/api/colors')
+        .then((response) => { this.colorsData = response.data; });
     },
   },
   watch: {
     colorId(value) {
       this.currentColorId = value;
     },
+  },
+  created() {
+    this.loadColors();
   },
 };
 </script>
