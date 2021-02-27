@@ -13,7 +13,7 @@
     <span class="catalog__price">
                 {{ product.price  | numberFormat}} ₽
               </span>
-    <ColorList :colors="filteredColors" :current-color-id.sync="currentColorId"
+    <ColorList :colors="product.colors" :current-color-id.sync="currentColorId"
                class="colors colors--black"/>
   </div>
 </template>
@@ -21,7 +21,6 @@
 <script>
 import ColorList from '@/components/common/ColorList.vue';
 import numberFormat from '@/helpers/numberFormat';
-import axios from 'axios';
 
 export default {
   components: { ColorList },
@@ -31,31 +30,13 @@ export default {
   data() {
     return {
       currentColorId: 0,
-      colorsData: null,
     };
   },
   props: ['product'],
-  computed: {
-    filteredColors() {
-      return this.product.colors;
-    },
-    colors() {
-      return this.colorsData ? this.colorsData.items : [];
-    },
-  },
-  methods: {
-    loadColors() {
-      axios.get('http://vue-study.dev.creonit.ru/api/colors')
-        .then((response) => { this.colorsData = response.data; });
-    },
-  },
   watch: {
     colorId(value) {
       this.currentColorId = value;
     },
-  },
-  created() {
-    this.loadColors();
   },
 };
 </script>

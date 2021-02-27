@@ -1,5 +1,9 @@
 <template>
-  <main class="content container">
+  <main class="content container" v-if="productLoading">Загрузка товара...</main>
+  <main v-else-if="!productData">
+    Не удалось загрузить товар
+  </main>
+  <main class="content container" v-else>
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
@@ -23,7 +27,7 @@
     <section class="item">
       <div class="item__pics pics">
         <div class="pics__wrapper">
-          <img width="570" height="570" :src="product.image"
+          <img width="570" height="570" :src="product.image.file.url"
                :alt="product.title">
         </div>
       </div>
@@ -41,31 +45,8 @@
 
             <fieldset class="form__block">
               <legend class="form__legend">Цвет:</legend>
-              <ul class="colors">
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input class="colors__radio sr-only" type="radio"
-                           name="color-item" value="blue" checked="">
-                    <span class="colors__value" style="background-color: #73B6EA;">
-                    </span>
-                  </label>
-                </li>
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input class="colors__radio sr-only"
-                           type="radio" name="color-item" value="yellow">
-                    <span class="colors__value" style="background-color: #FFBE15;">
-                    </span>
-                  </label>
-                </li>
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input class="colors__radio sr-only"
-                           type="radio" name="color-item" value="gray">
-                    <span class="colors__value" style="background-color: #939393;">
-                  </span></label>
-                </li>
-              </ul>
+              <ColorList :colors="product.colors" :current-color-id.sync="currentColorId"
+                         class="colors colors--black"/>
             </fieldset>
 
             <fieldset class="form__block">
@@ -188,27 +169,32 @@
 </template>
 
 <script>
-import products from '@/data/products';
-import categories from '@/data/categories';
 import numberFormat from '@/helpers/numberFormat';
 import AmountChange from '@/components/common/AmountChange.vue';
+import ColorList from '@/components/common/ColorList.vue';
+import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 
 export default {
   data() {
     return {
       productAmount: 1,
+      currentColorId: 0,
+      productData: null,
+      productLoading: false,
+      productLoadingFailed: false,
     };
   },
-  components: { AmountChange },
+  components: { ColorList, AmountChange },
   filters: {
     numberFormat,
   },
   computed: {
     product() {
-      return products.find((product) => product.id === +this.$route.params.id);
+      return this.productData;
     },
     category() {
-      return categories.find((category) => category.id === this.product.categoryId);
+      return this.productData.category;
     },
   },
   methods: {
@@ -218,12 +204,25 @@ export default {
         { productId: this.product.id, amount: this.productAmount },
       );
     },
+    loadProduct() {
+      this.productLoading = true;
+      this.productLoadingFailed = false;
+      clearTimeout(this.loadProductTimer);
+      this.loadProductTimer = setTimeout(() => {
+        axios
+          .get(`${API_BASE_URL}/api/products/${this.$route.params.id}`)
+          .then((response) => { this.productData = response.data; })
+          .catch(() => { this.productLoadingFailed = true; })
+          .then(() => { this.productLoading = false; });
+      }, 0);
+    },
   },
   watch: {
-    '$route.params.id': function routeParamsId() {
-      if (!this.product) {
-        this.$router.replace({ name: 'notFound' });
-      }
+    '$route.params.id': {
+      handler() {
+        this.loadProduct();
+      },
+      immediate: true,
     },
   },
 };
