@@ -1,1 +1,1 @@
-GET http://vue-study.dev.creonit.ru/api/products?page=1&limit=3
+GET http://vue-study.dev.creonit.ru/api/baskets?userAccessKey=8e9177d5ea1a2b9e88cf0fa60c4cc579
