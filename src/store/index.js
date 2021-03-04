@@ -21,8 +21,6 @@ export default new Vuex.Store({
       }
     },
     deleteCartProduct(state, productId) {
-      console.log(state.cartProducts);
-      console.log(productId);
       state.cartProducts = state.cartProducts.filter((item) => item.productId !== productId);
     },
     updateUserAccessKey(state, accessKey) {
@@ -131,7 +129,8 @@ export default new Vuex.Store({
         });
     },
     deleteCartProduct(context, id) {
-      return (new Promise((resolve) => setTimeout(resolve, 0)))
+      context.commit('deleteCartProduct', id);
+      return (new Promise((resolve) => setTimeout(resolve, 2000)))
         .then(() => {
           axios.request({
             method: 'delete',

@@ -221,7 +221,12 @@ export default {
         axios
           .get(`${API_BASE_URL}/api/products/${this.$route.params.id}`)
           .then((response) => { this.productData = response.data; })
-          .catch(() => { this.productLoadingFailed = true; })
+          .catch((error) => {
+            if (error.response.status === 404) {
+              this.$router.push({ name: 'notFound', params: { 0: '' } });
+            }
+            this.productLoadingFailed = true;
+          })
           .then(() => { this.productLoading = false; });
       }, 0);
     },

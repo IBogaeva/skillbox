@@ -10,10 +10,10 @@
     </div>
 
     <div class="content__catalog">
-      <ProductFilter :price-from.sync="filterPriceFrom"
-                     :price-to.sync="filterPriceTo"
-                     :category-id.sync="filterCategoryId"
-                     :color-id.sync="filterColorId"/>
+      <ProductFilter :price-from.sync="customFilters.filterPriceFrom"
+                     :price-to.sync="customFilters.filterPriceTo"
+                     :category-id.sync="customFilters.filterCategoryId"
+                     :color-id.sync="customFilters.filterColorId"/>
       <section class="catalog">
         <Loader v-if="productsLoading"/>
         <div v-if="productsLoadingFailed">Произошла ошибка при загрузке товаров
@@ -41,10 +41,12 @@ export default {
   },
   data() {
     return {
-      filterPriceFrom: 0,
-      filterPriceTo: 0,
-      filterCategoryId: 0,
-      filterColorId: 0,
+      customFilters: {
+        filterCategoryId: 0,
+        filterPriceFrom: 0,
+        filterPriceTo: 0,
+        filterColorId: 0,
+      },
       productsPerPage: 3,
       page: 1,
       productsData: null,
@@ -76,10 +78,10 @@ export default {
             params: {
               page: this.page,
               limit: this.productsPerPage,
-              categoryId: this.filterCategoryId,
-              colorId: this.filterColorId,
-              minPrice: this.filterPriceFrom,
-              maxPrice: this.filterPriceTo,
+              categoryId: this.customFilters.filterCategoryId,
+              colorId: this.customFilters.filterColorId,
+              minPrice: this.customFilters.filterPriceFrom,
+              maxPrice: this.customFilters.filterPriceTo,
             },
           })
           .then((response) => { this.productsData = response.data; })
@@ -89,24 +91,14 @@ export default {
     },
   },
   watch: {
-    page() {
-      this.loadProducts();
+    page: 'loadProducts',
+    customFilters: {
+      handler() {
+        this.loadProducts();
+      },
+      immediate: true,
+      deep: true,
     },
-    filterPriceFrom() {
-      this.loadProducts();
-    },
-    filterPriceTo() {
-      this.loadProducts();
-    },
-    filterCategoryId() {
-      this.loadProducts();
-    },
-    filterColorId() {
-      this.loadProducts();
-    },
-  },
-  created() {
-    this.loadProducts();
   },
 };
 </script>
