@@ -23,12 +23,13 @@
         Корзина
       </h1>
       <span class="content__info">
-        3 товара
+        {{ products.length }} товара
       </span>
     </div>
 
     <section class="cart">
-      <form class="cart__form form" action="#" method="POST">
+      <Loader v-if="orderSending"/>
+      <form class="cart__form form" action="#" method="POST" @submit.prevent="order">
         <div class="cart__field">
           <div class="cart__data">
             <BaseFormText title="ФИО" placeholder="Введите ваше полное имя"
@@ -43,9 +44,9 @@
             <BaseFormText title="Email" placeholder="Введи ваш Email"
                           v-model="formData.email" :error="formError.email" type="email"/>
 
-            <BaseFormTexarea title="Комментарий к заказу" :error="formError.comments"
+            <BaseFormTexarea title="Комментарий к заказу" :error="formError.comment"
                              placeholder="Ваши пожелания"
-                             v-model="formData.comments"/>
+                             v-model="formData.comment"/>
           </div>
 
           <div class="cart__options">
@@ -108,10 +109,10 @@
             Оформить заказ
           </button>
         </div>
-        <div class="cart__error form__error-block">
+        <div class="cart__error form__error-block" v-if="formErrorMessage">
           <h4>Заявка не отправлена!</h4>
           <p>
-            Похоже произошла ошибка. Попробуйте отправить снова или перезагрузите страницу.
+            {{ formErrorMessage }}
           </p>
         </div>
       </form>
@@ -125,6 +126,8 @@ import BaseFormTexarea from '@/components/formfield/BaseFormTexarea.vue';
 import Loader from '@/components/common/Loader.vue';
 import { mapGetters } from 'vuex';
 import OrderItem from '@/components/order/OrderItem.vue';
+import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 
 export default {
   components: {
@@ -137,6 +140,8 @@ export default {
     return {
       formData: {},
       formError: {},
+      formErrorMessage: '',
+      orderSending: false,
     };
   },
   computed: {
@@ -146,6 +151,34 @@ export default {
       totalAmount: 'cartTotalAmount',
       loading: 'cartProductsLoading',
     }),
+  },
+  methods: {
+    order() {
+      this.formError = {};
+      this.formErrorMessage = '';
+      this.orderSending = true;
+      clearTimeout(this.orderSendingTimer);
+      this.orderSending = setTimeout(() => {
+        axios
+          .post(`${API_BASE_URL}/api/orders`, {
+            ...this.formData,
+          }, {
+            params: {
+              userAccessKey: this.$store.state.userAccessKey,
+            },
+          })
+          .then(() => {
+            this.$store.commit('resetCart');
+          })
+          .catch((error) => {
+            this.formError = error.response.data.error.request || {};
+            this.formErrorMessage = error.response.data.error.message;
+          })
+          .then(() => {
+            this.orderSending = false;
+          });
+      }, 1000);
+    },
   },
 };
 </script>

@@ -18,7 +18,7 @@
           Корзина
         </h1>
         <span class="content__info">
-          {{ totalAmount }} товара
+          {{ products.length }} товара
         </span>
       </div>
 

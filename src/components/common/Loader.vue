@@ -26,6 +26,7 @@ export default {
     margin-left:-150px;
     margin-top:-50px;
     border-radius:20px;
+    z-index: 999999;
 
     .ball {
       position:absolute;
