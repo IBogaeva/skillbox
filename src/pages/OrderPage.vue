@@ -23,7 +23,7 @@
         Корзина
       </h1>
       <span class="content__info">
-        {{ products.length }} товара
+        {{ totalAmount }} товара
       </span>
     </div>
 
@@ -128,6 +128,7 @@ import { mapGetters } from 'vuex';
 import OrderItem from '@/components/order/OrderItem.vue';
 import axios from 'axios';
 import { API_BASE_URL } from '@/config';
+import numberFormat from '@/helpers/numberFormat';
 
 export default {
   components: {
@@ -135,6 +136,9 @@ export default {
     BaseFormTexarea,
     Loader,
     OrderItem,
+  },
+  filters: {
+    numberFormat,
   },
   data() {
     return {
@@ -167,8 +171,10 @@ export default {
               userAccessKey: this.$store.state.userAccessKey,
             },
           })
-          .then(() => {
+          .then((response) => {
             this.$store.commit('resetCart');
+            this.$store.commit('updateOrderInfo', response.data);
+            this.$router.push({ name: 'orderInfo', params: { id: response.data.id } });
           })
           .catch((error) => {
             this.formError = error.response.data.error.request || {};
