@@ -19,8 +19,8 @@
         </li>
       </ul>
 
-      <h1 class="content__title">
-        Заказ оформлен <span>№ 23621</span>
+      <h1 class="content__title"  v-if="orderInfo">
+        Заказ оформлен <span>№ {{ orderInfo.id }}</span>
       </h1>
     </div>
 
@@ -33,7 +33,7 @@
             Наши менеджеры свяжутся с&nbsp;Вами в&nbsp;течение часа для уточнения деталей доставки.
           </p>
 
-          <ul class="dictionary">
+          <ul class="dictionary" v-if="orderInfo">
             <li class="dictionary__item">
               <span class="dictionary__key">
                 Получатель
@@ -77,17 +77,8 @@
           </ul>
         </div>
 
-        <div class="cart__block">
-          <ul class="cart__orders">
-            <OrderItem v-for="item in basketItems" :key="item.id" :item="item"/>
-          </ul>
+        <OrderSummary :data="total"/>
 
-          <div class="cart__total">
-            <p>Доставка: <b>500 ₽</b></p>
-            <p>Итого: <b>{{ totalAmount }}</b> товара на сумму
-              <b>{{ totalPrice | numberFormat }} ₽</b></p>
-          </div>
-        </div>
       </form>
     </section>
   </main>
@@ -95,21 +86,24 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import OrderItem from '@/components/order/OrderItem.vue';
 import numberFormat from '@/helpers/numberFormat';
+import OrderSummary from '@/components/order/OrderSummary.vue';
 
 export default {
+  data() {
+    return {
+      orderTotal: {
+        items: [],
+        totalPrice: null,
+        totalAmount: null,
+      },
+    };
+  },
   filters: {
     numberFormat,
   },
   components: {
-    OrderItem,
-  },
-  created() {
-    if (this.$store.state.orderInfo && this.$store.state.orderInfo.id === this.$route.params.id) {
-      return;
-    }
-    this.$store.dispatch('loadOrderInfo', this.$route.params.id);
+    OrderSummary,
   },
   computed: {
     ...mapGetters({
@@ -129,6 +123,29 @@ export default {
     totalAmount() {
       return this.orderInfo.basket.items
         .reduce((acc, item) => item.quantity + acc, 0);
+    },
+    total() {
+      this.fillOrderTotal();
+      return this.orderTotal;
+    },
+  },
+  methods: {
+    fillOrderTotal() {
+      this.orderTotal.items = this.basketItems;
+      this.orderTotal.totalPrice = this.totalPrice;
+      this.orderTotal.totalAmount = this.totalAmount;
+    },
+  },
+  watch: {
+    '$route.params.id': {
+      handler() {
+        if (this.$store.state.orderInfo
+          && this.$store.state.orderInfo.id === this.$route.params.id) {
+          return;
+        }
+        this.$store.dispatch('loadOrderInfo', this.$route.params.id);
+      },
+      immediate: true,
     },
   },
 };

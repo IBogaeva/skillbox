@@ -93,22 +93,11 @@
           </div>
         </div>
 
-        <div class="cart__block">
-          <Loader v-if="loading"/>
-          <ul class="cart__orders">
-            <OrderItem v-for="item in products" :key="item.productId" :item="item"/>
-          </ul>
-
-          <div class="cart__total">
-            <p>Доставка: <b>500 ₽</b></p>
-            <p>Итого: <b>{{ totalAmount }}</b> товара на сумму
-              <b>{{ totalPrice | numberFormat }} ₽</b></p>
-          </div>
-
-          <button class="cart__button button button--primery" type="submit">
-            Оформить заказ
-          </button>
-        </div>
+       <OrderSummary :data="total">
+           <button class="cart__button button button--primery" type="submit">
+                Оформить заказ
+           </button>
+        </OrderSummary>
         <div class="cart__error form__error-block" v-if="formErrorMessage">
           <h4>Заявка не отправлена!</h4>
           <p>
@@ -125,17 +114,17 @@ import BaseFormText from '@/components/formfield/BaseFormText.vue';
 import BaseFormTexarea from '@/components/formfield/BaseFormTexarea.vue';
 import Loader from '@/components/common/Loader.vue';
 import { mapGetters } from 'vuex';
-import OrderItem from '@/components/order/OrderItem.vue';
 import axios from 'axios';
 import { API_BASE_URL } from '@/config';
 import numberFormat from '@/helpers/numberFormat';
+import OrderSummary from '@/components/order/OrderSummary.vue';
 
 export default {
   components: {
     BaseFormText,
     BaseFormTexarea,
     Loader,
-    OrderItem,
+    OrderSummary,
   },
   filters: {
     numberFormat,
@@ -146,6 +135,11 @@ export default {
       formError: {},
       formErrorMessage: '',
       orderSending: false,
+      cartTotal: {
+        items: [],
+        totalPrice: null,
+        totalAmount: null,
+      },
     };
   },
   computed: {
@@ -155,6 +149,10 @@ export default {
       totalAmount: 'cartTotalAmount',
       loading: 'cartProductsLoading',
     }),
+    total() {
+      this.fillCartTotal();
+      return this.cartTotal;
+    },
   },
   methods: {
     order() {
@@ -162,7 +160,7 @@ export default {
       this.formErrorMessage = '';
       this.orderSending = true;
       clearTimeout(this.orderSendingTimer);
-      this.orderSending = setTimeout(() => {
+      this.orderSendingTimer = setTimeout(() => {
         axios
           .post(`${API_BASE_URL}/api/orders`, {
             ...this.formData,
@@ -184,6 +182,11 @@ export default {
             this.orderSending = false;
           });
       }, 1000);
+    },
+    fillCartTotal() {
+      this.cartTotal.items = this.products;
+      this.cartTotal.totalPrice = this.totalPrice;
+      this.cartTotal.totalAmount = this.totalAmount;
     },
   },
 };

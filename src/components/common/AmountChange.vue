@@ -1,7 +1,7 @@
 <template>
   <div>
     <button type="button" aria-label="Убрать один товар"
-            @click.prevent="computedAmount > 0 ? computedAmount-- : computedAmount">
+            @click.prevent="computedAmount > 1 ? computedAmount-- : computedAmount">
       <svg width="12" height="12" fill="currentColor">
         <use xlink:href="#icon-minus"></use>
       </svg>
