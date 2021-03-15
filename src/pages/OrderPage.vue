@@ -135,11 +135,6 @@ export default {
       formError: {},
       formErrorMessage: '',
       orderSending: false,
-      cartTotal: {
-        items: [],
-        totalPrice: null,
-        totalAmount: null,
-      },
     };
   },
   computed: {
@@ -150,8 +145,11 @@ export default {
       loading: 'cartProductsLoading',
     }),
     total() {
-      this.fillCartTotal();
-      return this.cartTotal;
+      return {
+        items: this.products,
+        totalPrice: this.totalPrice,
+        totalAmount: this.totalAmount,
+      };
     },
   },
   methods: {
@@ -182,11 +180,6 @@ export default {
             this.orderSending = false;
           });
       }, 1000);
-    },
-    fillCartTotal() {
-      this.cartTotal.items = this.products;
-      this.cartTotal.totalPrice = this.totalPrice;
-      this.cartTotal.totalAmount = this.totalAmount;
     },
   },
 };

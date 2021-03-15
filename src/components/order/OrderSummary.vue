@@ -23,6 +23,15 @@ export default {
   filters: {
     numberFormat,
   },
-  props: ['data'],
+  props: {
+    data: {
+      type: Object,
+      default: () => ({
+        items: [],
+        totalAmount: null,
+        totalPrice: null,
+      }),
+    },
+  },
 };
 </script>

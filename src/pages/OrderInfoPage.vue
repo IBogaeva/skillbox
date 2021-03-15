@@ -77,7 +77,7 @@
           </ul>
         </div>
 
-        <OrderSummary :data="total"/>
+        <OrderSummary :data="total"  v-if="orderInfo"/>
 
       </form>
     </section>
@@ -90,15 +90,6 @@ import numberFormat from '@/helpers/numberFormat';
 import OrderSummary from '@/components/order/OrderSummary.vue';
 
 export default {
-  data() {
-    return {
-      orderTotal: {
-        items: [],
-        totalPrice: null,
-        totalAmount: null,
-      },
-    };
-  },
   filters: {
     numberFormat,
   },
@@ -125,15 +116,11 @@ export default {
         .reduce((acc, item) => item.quantity + acc, 0);
     },
     total() {
-      this.fillOrderTotal();
-      return this.orderTotal;
-    },
-  },
-  methods: {
-    fillOrderTotal() {
-      this.orderTotal.items = this.basketItems;
-      this.orderTotal.totalPrice = this.totalPrice;
-      this.orderTotal.totalAmount = this.totalAmount;
+      return {
+        items: this.basketItems,
+        totalPrice: this.totalPrice,
+        totalAmount: this.totalAmount,
+      };
     },
   },
   watch: {
@@ -143,7 +130,12 @@ export default {
           && this.$store.state.orderInfo.id === this.$route.params.id) {
           return;
         }
-        this.$store.dispatch('loadOrderInfo', this.$route.params.id);
+        this.$store.dispatch('loadOrderInfo', this.$route.params.id)
+          .catch((error) => {
+            if (error.response.status === 404 || error.response.status === 400) {
+              this.$router.push({ name: 'notFound', params: { 0: '' } });
+            }
+          });
       },
       immediate: true,
     },

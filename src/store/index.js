@@ -2,7 +2,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { API_BASE_URL } from '@/config';
 import axios from 'axios';
-import router from '@/router/index';
 
 Vue.use(Vuex);
 
@@ -174,8 +173,9 @@ export default new Vuex.Store({
         .then((response) => {
           context.commit('updateOrderInfo', response.data);
         })
-        .catch(() => {
-          router.push({ name: 'notFound', params: { 0: '' } });
+        .catch((e) => {
+          console.log(e);
+          throw e;
         });
     },
   },
